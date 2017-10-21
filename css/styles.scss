@@ -2,8 +2,12 @@
 
 @import url('https://fonts.googleapis.com/css?family=Share+Tech+Mono');
 
-
 // friggen mixins maaaaaan.
+
+//colors
+$midGrey: #2e2e2e;
+$darkGrey: #252525;
+$green: #00ffb4;
 
 @mixin centerer {
     position: absolute;
@@ -70,7 +74,7 @@ html {}
 
 body {
     min-height: 100vh;
-    background-color: #2e2e2e;
+    background-color: $midGrey;
 }
 
 .noise {
@@ -85,7 +89,7 @@ body {
 }
 
 .blob path {
-    fill: #252525;
+    fill:$darkGrey;
 }
 
 .color-3 {
@@ -101,7 +105,7 @@ body {
 
 .color-2 {
     z-index: z('color-2');
-    stroke: #00ffb4;
+    stroke: $green;
     transform: translate3d(2px, 2px, 0);
     stroke-width: 8px;
 }
