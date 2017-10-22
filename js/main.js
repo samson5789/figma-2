@@ -150,91 +150,81 @@ var lineDrawing = anime({
     new MorphingBG(document.querySelector('svg.blob'));
 };
 
-const noise = () => {
-    let canvas, ctx;
-    let wWidth, wHeight;
+//https://codepen.io/cassieevans/pen/aLPKYo
 
-    let noiseData = [];
-    let frame = 0;
+// https://hacks.mozilla.org/2011/12/faster-canvas-pixel-manipulation-with-typed-arrays/
+//http://creativejs.com/resources/requestanimationframe/
 
-    let loopTimeout;
+// Obtain a reference to the canvas element using its id.
+var canvas = document.getElementById('noise');
+// Obtain a graphics context on the canvas element for drawing.
+var ctx = canvas.getContext('2d');
+// setting canvas width
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+var width = canvas.width;
+var height = canvas.height;
+
+function noise(canvas) {
+    //obtain a reference to the canvas’ image data
+    var imageData = ctx.createImageData(width, height);
+    //micro-optimisation to get a reference to the raw pixel data
+    var data = imageData.data;
+    //make a new ImageBuffer for direct manipulation of that ImageData 
+    var buffer = new Uint32Array(imageData.data.buffer);
+    var length = buffer.length;
+    // Cycling through all the integers in the array. The values of the red, green, and blue channels, along with the alpha channel are packed into a single integer using bitwise left-shifts and bitwise ORs.
+    for (i = 0; i < length; i++) {
+        buffer[i] = 255 * Math.random() << 24;
+    }
+    console.log(data);
+    ctx.putImageData(imageData, 0, 0);
 
 
-    // Create Noise
-    const createNoise = () => {
-        const idata = ctx.createImageData(wWidth, wHeight);
-        const buffer32 = new Uint32Array(idata.data.buffer);
-        const len = buffer32.length;
 
-        for (let i = 0; i < len; i++) {
-            if (Math.random() < 0.5) {
-                buffer32[i] = 0xff000000;
-            }
+}
+
+
+var fps = 15;
+
+function draw() {
+    setTimeout(function() {
+        requestAnimationFrame(draw);
+        for (let i = 0; i < 2; i++) {
+            noise();
         }
+    }, 1000 / fps);
+}
+draw();
 
-        noiseData.push(idata);
-    };
+// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+// http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
 
+// requestAnimationFrame polyfill/cross browser by Erik Möller
+// fixes from Paul Irish and Tino Zijdel
 
-    // Play Noise
-    const paintNoise = () => {
-        if (frame === 9) {
-            frame = 0;
-        } else {
-            frame++;
-        }
+(function() {
+    var lastTime = 0;
+    var vendors = ['ms', 'moz', 'webkit', 'o'];
+    for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+        window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
+        window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] ||
+            window[vendors[x] + 'CancelRequestAnimationFrame'];
+    }
 
-        ctx.putImageData(noiseData[frame], 0, 0);
-    };
+    if (!window.requestAnimationFrame)
+        window.requestAnimationFrame = function(callback, element) {
+            var currTime = new Date().getTime();
+            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+            var id = window.setTimeout(function() { callback(currTime + timeToCall); },
+                timeToCall);
+            lastTime = currTime + timeToCall;
+            return id;
+        };
 
-
-    // Loop
-    const loop = () => {
-        paintNoise(frame);
-
-        loopTimeout = window.setTimeout(() => {
-            window.requestAnimationFrame(loop);
-        }, (1000 / 25));
-    };
-
-
-    // Setup
-    const setup = () => {
-        wWidth = window.innerWidth;
-        wHeight = window.innerHeight;
-
-        canvas.width = wWidth;
-        canvas.height = wHeight;
-
-        for (let i = 0; i < 10; i++) {
-            createNoise();
-        }
-
-        loop();
-    };
-
-
-    // Reset
-    let resizeThrottle;
-    const reset = () => {
-        window.addEventListener('resize', () => {
-            window.clearTimeout(resizeThrottle);
-
-            resizeThrottle = window.setTimeout(() => {
-                window.clearTimeout(loopTimeout);
-                setup();
-            }, 200);
-        }, false);
-    };
-
-
-    // Init
-    const init = (() => {
-        canvas = document.getElementById('noise');
-        ctx = canvas.getContext('2d');
-
-        setup();
-    })();
-};
-
-noise();
+    if (!window.cancelAnimationFrame)
+        window.cancelAnimationFrame = function(id) {
+            clearTimeout(id);
+        };
+}());
