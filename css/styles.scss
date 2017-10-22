@@ -13,7 +13,8 @@ $green: #00ffb4;
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
   }
 //  @include centerer;
 
@@ -29,12 +30,6 @@ $content: '') {
 @mixin keyframes($animationName)
 {
     @-webkit-keyframes #{$animationName} {
-        @content;
-    }
-    @-moz-keyframes #{$animationName} {
-        @content;
-    }
-    @-o-keyframes #{$animationName} {
         @content;
     }
     @keyframes #{$animationName} {
@@ -67,10 +62,10 @@ $z-indexes: (
 *,
 *::after,
 *::before {
-    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
 }
 
-html {}
 
 body {
     min-height: 100vh;
@@ -94,6 +89,7 @@ body {
 
 .color-3 {
     stroke: #3c3c3c;
+    -webkit-transform: translate3d(2px, 2px, 0);
     transform: translate3d(2px, 2px, 0);
     stroke-width: 6px;
 }
@@ -106,7 +102,8 @@ body {
 .color-2 {
     z-index: z('color-2');
     stroke: $green;
-    transform: translate3d(2px, 2px, 0);
+    -webkit-transform: translate3d(2px, 2px, 0);
+            transform: translate3d(2px, 2px, 0);
     stroke-width: 8px;
 }
 
@@ -476,12 +473,14 @@ h2 {
     62% {
         clip: rect(1px, 9999px, 17px, 0);
         left: 4%;
-        filter: invert(1);
+        -webkit-filter: invert(1);
+                filter: invert(1);
     }
     63% {
         clip: rect(20px, 9999px, 54px, 0);
         left: -2%;
-        filter: none;
+        -webkit-filter: none;
+                filter: none;
     }
     64% {
         clip: rect(19px, 9999px, 36px, 0);
@@ -586,12 +585,14 @@ h2 {
     80.5% {
         clip: rect(3px, 9999px, 17px, 0);
         left: 4%;
-        filter: invert(1);
+        -webkit-filter: invert(1);
+                filter: invert(1);
     }
     81% {
         clip: rect(24px, 9999px, 54px, 0);
         left: -2%;
-        filter: none;
+        -webkit-filter: none;
+                filter: none;
     }
     81.5% {
         clip: rect(19px, 9999px, 36px, 0);
